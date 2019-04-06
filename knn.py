@@ -1,9 +1,11 @@
 # data: https://www.kaggle.com/c/digit-recognizer
 # Method: K-nearest neighbour
 
-import numpy as np
 import matplotlib.pylab as plt
+import numpy as np
+
 import utils
+
 
 class KNN:
     def __init__(self, k):

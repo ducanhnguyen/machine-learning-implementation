@@ -1,5 +1,5 @@
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 
 def sum_scalar():
@@ -93,6 +93,7 @@ def gradient_descent():
 
             print()
 
+
 def sum():
     y = tf.placeholder(dtype=tf.float32, shape=(3,))
     y_hat = tf.placeholder(dtype=tf.float32, shape=(3,))
@@ -102,5 +103,6 @@ def sum():
     with tf.Session() as session:
         cost = session.run(tf_cost, feed_dict={y: [1, 2, 3], y_hat: [4, 5, 6]})
         print(cost)
+
 
 sum()

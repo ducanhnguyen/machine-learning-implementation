@@ -3,20 +3,21 @@
 # Method: deep learning, 1 hidden layer (M units), softmax activation, full gradient ascent
 # Use tensorflow
 """
-import numpy as np
 import matplotlib.pylab as plt
-import utils
+import numpy as np
 import tensorflow as tf
 
+import utils
 
-class Neural_Network:
+
+class NeuralNetwork:
     def __init__(self, M):
         '''
         :param M: Number of units in the first layer
         '''
         self.M = M
 
-    def initialize_weights(self, D, M, K):
+    def initializeWeights(self, D, M, K):
         tf_W1 = tf.Variable(dtype=tf.float32, initial_value=tf.random.normal(shape=(D, M), mean=0, stddev=1), name='W1')
         tf_b1 = tf.Variable(dtype=tf.float32, initial_value=tf.random.normal(shape=(M,)), name='b1')
 
@@ -25,7 +26,7 @@ class Neural_Network:
 
         return tf_W1, tf_b1, tf_W2, tf_b2
 
-    def initialize_placeholder(self):
+    def initializePlaceholder(self):
         tf_X = tf.placeholder(dtype=tf.float32, name='X')
         tf_Y = tf.placeholder(dtype=tf.float32, name='Y')
         return tf_X, tf_Y
@@ -35,14 +36,14 @@ class Neural_Network:
         Y = utils.convert_to_indicator(y)
         N, D = X.shape
 
-        tf_X, tf_Y = self.initialize_placeholder()
-        tf_W1, tf_b1, tf_W2, tf_b2 = self.initialize_weights(D, self.M, K)
+        tf_X, tf_Y = self.initializePlaceholder()
+        tf_W1, tf_b1, tf_W2, tf_b2 = self.initializeWeights(D, self.M, K)
 
         # define symbolic operations
         tf_Yhat = self.forward(tf_X, tf_W1, tf_b1, tf_W2, tf_b2)
-        tf_cost = tf.math.reduce_sum(-1 * tf.multiply(tf_Y, tf.log(tf_Yhat))) # cross-entropy
+        tf_cost = tf.math.reduce_sum(-1 * tf.multiply(tf_Y, tf.log(tf_Yhat)))  # cross-entropy
         tf_train = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(tf_cost)
-        tf_yhat_prediction = tf.math.argmax(tf_Yhat, axis=1)
+        tf_yhat = tf.math.argmax(tf_Yhat, axis=1)
 
         scores = []
         iterations = []
@@ -57,8 +58,8 @@ class Neural_Network:
                 cost = session.run(tf_cost, feed_dict={tf_X: X, tf_Y: Y})
                 print("Cost = " + str(cost))
 
-                yhat_prediction = session.run(tf_yhat_prediction, feed_dict={tf_X: X, tf_Y: Y})
-                score = np.mean(yhat_prediction == y)
+                yhat = session.run(tf_yhat, feed_dict={tf_X: X, tf_Y: Y})
+                score = np.mean(yhat == y)
                 print('Score = ' + str(score))
 
                 iterations.append(i)
@@ -85,7 +86,7 @@ class Neural_Network:
 
 def main():
     X_train, y_train = utils.read_csv('../data/digit-recognizer/train.csv', limit=1000)
-    s = Neural_Network(M=7)
+    s = NeuralNetwork(M=7)
     s.fit(X_train, y_train)
 
 

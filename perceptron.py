@@ -1,8 +1,8 @@
 # data: https://www.kaggle.com/c/digit-recognizer
 # Method: Perceptron
 # For simplicity, we take binary classification with class 0 and class 1
-import pandas as pd
 import numpy as np
+
 import utils
 
 

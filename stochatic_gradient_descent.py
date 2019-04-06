@@ -2,9 +2,9 @@
 # Objective: Compare learning rate strategy: constant, Adagrad, RMSProp, and step decay
 # Method: Use deep learning, 1 hidden layer (M units), softmax activation
 
-import pandas as pd
-import numpy as np
 import matplotlib.pylab as plt
+import numpy as np
+
 import utils
 
 
@@ -15,14 +15,14 @@ class Neural_Network:
         '''
         self.M = M
 
-    def initialize_weight(self, K, D, M):
+    def initializeWeight(self, K, D, M):
         W1 = np.random.rand(D, M)
         b1 = np.random.rand(M)
         W2 = np.random.rand(M, K)
         b2 = np.random.rand(K)
         return W1, b1, W2, b2
 
-    def update_W2_and_b2(self, W2, b2, Y, Y_hat, Z, N, K, M, startRange, endRange):
+    def updateW2andb2(self, W2, b2, Y, Y_hat, Z, N, K, M, startRange, endRange):
         # very slow
         '''
         gradient_w2 = np.zeros((W2.shape[0], W2.shape[1]))
@@ -39,7 +39,7 @@ class Neural_Network:
         gradient_b2 = np.sum(Y[startRange:endRange] - Y_hat[startRange:endRange], axis=0)
         return gradient_w2, gradient_b2
 
-    def update_W1_and_b1(self, W1, W2, b1, X, D, Y, Y_hat, Z, N, K, M, startRange, endRange):
+    def updateW1andb1(self, W1, W2, b1, X, D, Y, Y_hat, Z, N, K, M, startRange, endRange):
         # very slow
         '''
         gradient_w1 = np.zeros((W1.shape[0], W1.shape[1]))
@@ -82,7 +82,7 @@ class Neural_Network:
         Y = utils.convert_to_indicator(y)
         K = np.amax(y) + 1  # get number of classes
         N, D = X.shape
-        self.W1, self.b1, self.W2, self.b2 = self.initialize_weight(K, D, self.M)
+        self.W1, self.b1, self.W2, self.b2 = self.initializeWeight(K, D, self.M)
 
         # for logging
         l_cost = list()
@@ -128,13 +128,13 @@ class Neural_Network:
                 startRange = j
                 endRange = j + 1
                 print('Choose observation ' + str(startRange))
-                gradient_W2, gradient_b2 = self.update_W2_and_b2(self.W2, self.b2, Y, Y_hat, Z, N, K, self.M,
-                                                                 startRange,
-                                                                 endRange)
-                gradient_W1, gradient_b1 = self.update_W1_and_b1(self.W1, self.W2, self.b1, X, D, Y, Y_hat, Z, N, K,
-                                                                 self.M,
-                                                                 startRange,
-                                                                 endRange)
+                gradient_W2, gradient_b2 = self.updateW2andb2(self.W2, self.b2, Y, Y_hat, Z, N, K, self.M,
+                                                              startRange,
+                                                              endRange)
+                gradient_W1, gradient_b1 = self.updateW1andb1(self.W1, self.W2, self.b1, X, D, Y, Y_hat, Z, N, K,
+                                                              self.M,
+                                                              startRange,
+                                                              endRange)
                 print('Update weights')
 
                 # update learning rate

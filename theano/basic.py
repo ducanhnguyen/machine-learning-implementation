@@ -1,5 +1,6 @@
-import theano.tensor as T
 import theano
+import theano.tensor as T
+
 
 def dmatrix():
     x = T.dmatrix('x')
@@ -83,31 +84,35 @@ def array():
     f = theano.function(inputs=[], outputs=[cross_entropy])
     print(f())
 
+
 def gradient_one_variable():
     x = T.scalar(name='x')
     y = T.scalar(name='y')
 
     cost = x ** 2
-    grad = theano.gradient.grad(cost = cost, wrt=x)
+    grad = theano.gradient.grad(cost=cost, wrt=x)
     f = theano.function(inputs=[x], outputs=[grad])
     print(f(3))
 
+
 def gradient_one_variable():
     x = T.scalar(name='x')
     y = T.scalar(name='y')
 
     cost = x ** 2
-    grad = theano.gradient.grad(cost = cost, wrt=x)
+    grad = theano.gradient.grad(cost=cost, wrt=x)
     f = theano.function(inputs=[x], outputs=[grad])
-    print(f(x = 3))
+    print(f(x=3))
+
 
 def gradient_multiple_variables():
     x = T.scalar(name='x')
     y = T.scalar(name='y')
 
     cost = x ** 2 + y ** 2
-    grad = theano.gradient.grad(cost = cost, wrt=[x, y])
-    f = theano.function(inputs=[x, y], outputs=grad) # no need [grad] because grad is an array
-    print(f(x = 3, y = 1))
+    grad = theano.gradient.grad(cost=cost, wrt=[x, y])
+    f = theano.function(inputs=[x, y], outputs=grad)  # no need [grad] because grad is an array
+    print(f(x=3, y=1))
+
 
 gradient_multiple_variables()

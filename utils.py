@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def softmax(X):
     # print('softmax before: ' + str(X[1:5]))
     X = np.exp(X)
@@ -21,6 +22,7 @@ def convert_to_indicator(y):
     for idx, value in enumerate(y):
         Y[idx, value] = 1
     return Y
+
 
 def read_csv(pathStr, limit=None):
     data = pd.read_csv(pathStr)

@@ -6,25 +6,27 @@
 # - If we use too large learning rate (e.g., 0.1), the problem of NaN happens.
 # - With three learning rate (i.e., 0.0001, 0.00001, 0.000001), the first learning rate converges faster. The last learing rate converges slowest.
 
-import numpy as np
 import matplotlib.pylab as plt
+import numpy as np
+
 import utils
 
-class Neural_Network:
+
+class NeuralNetwork:
     def __init__(self, M):
         '''
         :param M: Number of units in the first layer
         '''
         self.M = M
 
-    def initialize_weight(self, K, D, M):
+    def initializeWeight(self, K, D, M):
         W1 = np.random.rand(D, M)
         b1 = np.random.rand(M)
         W2 = np.random.rand(M, K)
         b2 = np.random.rand(K)
         return W1, b1, W2, b2
 
-    def update_W2_and_b2(self, W2, b2, Y, Y_hat, Z, N, K, M, startRange, endRange):
+    def updateW2andb2(self, W2, b2, Y, Y_hat, Z, N, K, M, startRange, endRange):
         # very slow
         '''
         gradient_w2 = np.zeros((W2.shape[0], W2.shape[1]))
@@ -41,7 +43,7 @@ class Neural_Network:
         gradient_b2 = np.sum(Y[startRange:endRange] - Y_hat[startRange:endRange], axis=0)
         return gradient_w2, gradient_b2
 
-    def update_W1_and_b1(self, W1, W2, b1, X, D, Y, Y_hat, Z, N, K, M, startRange, endRange):
+    def updateW1andb1(self, W1, W2, b1, X, D, Y, Y_hat, Z, N, K, M, startRange, endRange):
         # very slow
         '''
         gradient_w1 = np.zeros((W1.shape[0], W1.shape[1]))
@@ -80,7 +82,7 @@ class Neural_Network:
         K = np.amax(y) + 1
         Y = utils.convert_to_indicator(y)
         N, D = X.shape
-        self.W1, self.b1, self.W2, self.b2 = self.initialize_weight(K, D, self.M)
+        self.W1, self.b1, self.W2, self.b2 = self.initializeWeight(K, D, self.M)
 
         l_cost = list()
         l_iterations = list()
@@ -108,13 +110,13 @@ class Neural_Network:
             startRange = 0
             endRange = N
 
-            gradient_W2, gradient_b2 = self.update_W2_and_b2(self.W2, self.b2, Y, Y_hat, Z, N, K, self.M,
-                                                             startRange,
-                                                             endRange)
-            gradient_W1, gradient_b1 = self.update_W1_and_b1(self.W1, self.W2, self.b1, X, D, Y, Y_hat, Z, N, K,
-                                                             self.M,
-                                                             startRange,
-                                                             endRange)
+            gradient_W2, gradient_b2 = self.updateW2andb2(self.W2, self.b2, Y, Y_hat, Z, N, K, self.M,
+                                                          startRange,
+                                                          endRange)
+            gradient_W1, gradient_b1 = self.updateW1andb1(self.W1, self.W2, self.b1, X, D, Y, Y_hat, Z, N, K,
+                                                          self.M,
+                                                          startRange,
+                                                          endRange)
 
             self.W1 += learning_rate * (gradient_W1 + L2_regulation * self.W1)
             self.b1 += learning_rate * (gradient_b1 + L2_regulation * self.b1)
@@ -147,9 +149,10 @@ class Neural_Network:
         cost = -1 * cost
         return cost
 
+
 def main():
     X_train, y_train = utils.read_csv('./data/digit-recognizer/train.csv', limit=10000)
-    s = Neural_Network(M=7)
+    s = NeuralNetwork(M=7)
 
     # plot score with different learning rates
     l_cost_0, l_iterations_0, l_score_0 = s.fit(X_train, y_train, epoch=10, learning_rate=0.0001, L2_regulation=0)
@@ -167,6 +170,7 @@ def main():
     plt.grid(True)
     plt.legend()
     plt.show()
+
 
 if __name__ == "__main__":
     main()

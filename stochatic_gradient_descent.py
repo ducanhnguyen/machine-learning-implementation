@@ -15,7 +15,7 @@ class Neural_Network:
         '''
         self.M = M
 
-    def initializeWeight(self, K, D, M):
+    def initializeWeights(self, K, D, M):
         W1 = np.random.rand(D, M)
         b1 = np.random.rand(M)
         W2 = np.random.rand(M, K)
@@ -66,11 +66,11 @@ class Neural_Network:
             axis=0)
         return gradient_w1, gradient_b1
 
-    def fit(self, X, y, strategy):
+    def fit(self, Xtrain, ytrain, strategy):
         '''
         Build model
-        :param X: a set of observations
-        :param y: labels
+        :param Xtrain: a set of observations
+        :param ytrain: labels
         :param epoch:
         :param learning_rate:
         :return:
@@ -79,10 +79,10 @@ class Neural_Network:
         learning_rate = strategy['learning_rate']
         L2_regulation = strategy['L2_regulation']
 
-        Y = utils.convert_to_indicator(y)
-        K = np.amax(y) + 1  # get number of classes
-        N, D = X.shape
-        self.W1, self.b1, self.W2, self.b2 = self.initializeWeight(K, D, self.M)
+        Y = utils.convert2indicator(ytrain)
+        K = np.amax(ytrain) + 1  # get number of classes
+        N, D = Xtrain.shape
+        self.W1, self.b1, self.W2, self.b2 = self.initializeWeights(K, D, self.M)
 
         # for logging
         l_cost = list()
@@ -112,14 +112,14 @@ class Neural_Network:
                 print('Learning rate: ' + str(learning_rate))
 
                 # compute score
-                Y_hat, Z = self.predict(X)
-                y_hat = np.argmax(Y_hat, axis=1)
-                y_index = np.argmax(Y, axis=1)
-                score = np.mean(y_hat == y_index)
+                Yhat, Z = self.predict(Xtrain)
+                yhat = np.argmax(Yhat, axis=1)
+                yindex = np.argmax(Y, axis=1)
+                score = np.mean(yhat == yindex)
                 l_score.append(score)
                 print('Score: ' + str(score))
 
-                cost = self.cost(Y_hat, Y)
+                cost = self.cost(Yhat, Y)
                 l_cost.append(cost)
                 l_iterations.append(iteration)
                 print('Cost: ' + str(cost))
@@ -128,10 +128,10 @@ class Neural_Network:
                 startRange = j
                 endRange = j + 1
                 print('Choose observation ' + str(startRange))
-                gradient_W2, gradient_b2 = self.updateW2andb2(self.W2, self.b2, Y, Y_hat, Z, N, K, self.M,
+                gradient_W2, gradient_b2 = self.updateW2andb2(self.W2, self.b2, Y, Yhat, Z, N, K, self.M,
                                                               startRange,
                                                               endRange)
-                gradient_W1, gradient_b1 = self.updateW1andb1(self.W1, self.W2, self.b1, X, D, Y, Y_hat, Z, N, K,
+                gradient_W1, gradient_b1 = self.updateW1andb1(self.W1, self.W2, self.b1, Xtrain, D, Y, Yhat, Z, N, K,
                                                               self.M,
                                                               startRange,
                                                               endRange)
@@ -209,23 +209,20 @@ class Neural_Network:
         return l_cost, l_iterations, l_score
 
     def predict(self, X):
-        # print('Computing Z')
         Z = utils.softmax(X.dot(self.W1) + self.b1)  # Z:(N, M)
+        Yhat = utils.softmax(Z.dot(self.W2) + self.b2)
+        return Yhat, Z
 
-        # print('Computing Y_hat')
-        Y_hat = utils.softmax(Z.dot(self.W2) + self.b2)
-        return Y_hat, Z
-
-    def cost(self, Y_hat, Y):
+    def cost(self, Yhat, Y):
         '''
         Cross entropy cost
-        :param Y_hat: the prediction over classes
+        :param Yhat: the prediction over classes
         :param Y: the true distribution
         :return:
         '''
         cost = 0
-        for idx, y_hat in enumerate(Y_hat):
-            for class_index, predicted_class_probability in enumerate(Y_hat[idx]):
+        for idx, yhat in enumerate(Yhat):
+            for class_index, predicted_class_probability in enumerate(yhat):
                 cost += Y[idx][class_index] * np.log(predicted_class_probability)
 
         cost = -1 * cost
@@ -234,7 +231,7 @@ class Neural_Network:
 
 def main():
     ANALYZED_OBSERVATIONS = 1000
-    X_train, y_train = utils.read_csv('./data/digit-recognizer/train.csv', limit=ANALYZED_OBSERVATIONS)
+    Xtrain, ytrain = utils.readCsv('./data/digit-recognizer/train.csv', limit=ANALYZED_OBSERVATIONS)
     s = Neural_Network(M=7)
 
     # global configuration
@@ -254,7 +251,7 @@ def main():
     }
 
     for _, strategy in strategies.items():
-        l_cost, l_iterations, l_score = s.fit(X_train, y_train, strategy=strategy)
+        l_cost, l_iterations, l_score = s.fit(Xtrain, ytrain, strategy=strategy)
         plt.plot(l_iterations, l_score, label=str(strategy))
 
     plt.xlabel('Iteration')

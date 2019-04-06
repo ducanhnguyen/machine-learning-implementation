@@ -28,22 +28,22 @@ def filter(X, Y):
 
 class Perceptron:
 
-    def fit(self, X, y, epoch=100, learning_rate=0.01):
-        X = np.array(X)
-        y = np.array(y)
+    def fit(self, Xtrain, ytrain, epoch=100, learning_rate=0.01):
+        Xtrain = np.array(Xtrain)
+        ytrain = np.array(ytrain)
 
         # Initialize w
-        row = X.shape[1]
+        row = Xtrain.shape[1]
         self.w = np.zeros(row)
         self.b = 0
 
         # build model here
         for i in range(epoch):
-            y_hat = self.predict(X)
+            yhat = self.predict(Xtrain)
 
             misclassified = list()
-            for idx in range(len(y_hat)):
-                if y[idx] != y_hat[idx]:
+            for idx in range(len(yhat)):
+                if ytrain[idx] != yhat[idx]:
                     misclassified.append(idx)
 
             print("Epoch = " + str(i) + ": num of misclassified points = " + str(len(misclassified)))
@@ -53,34 +53,34 @@ class Perceptron:
             else:
                 # choose a randomly misclassified point
                 idx_random = np.random.choice(misclassified)
-                self.w += learning_rate * X[idx_random] * y[idx_random]
-                self.b += learning_rate * y[idx_random]
+                self.w += learning_rate * Xtrain[idx_random] * ytrain[idx_random]
+                self.b += learning_rate * ytrain[idx_random]
         return self.w, self.b
 
     def predict(self, X):
         X = np.array(X)
         return np.sign(X.dot(self.w) + self.b)
 
-    def score(selfs, y_hat, y):
-        return np.mean(y_hat == y)
+    def score(selfs, yhat, y):
+        return np.mean(yhat == y)
 
 
 def main():
-    X, Y = utils.read_csv('./data/digit-recognizer/train.csv', limit=2000)
+    X, Y = utils.readCsv('./data/digit-recognizer/train.csv', limit=2000)
     X, Y = filter(X, Y)
-    N = int(len(X) / 2)
-    X_train = X[:N]
-    y_train = Y[:N]
-    X_test = X[N:]
-    y_test = Y[N:]
+    TRAIN = int(len(X) / 2)
+    Xtrain = X[:TRAIN]
+    ytrain = Y[:TRAIN]
+    Xtest = X[TRAIN:]
+    ytest = Y[TRAIN:]
 
     p = Perceptron()
-    p.fit(X_train, y_train, epoch=5000)
+    p.fit(Xtrain, ytrain, epoch=5000)
     print("Training done.")
 
-    y_hat = p.predict(X_test)
+    yhat = p.predict(Xtest)
     print("Use test data. Prediction done!")
-    score = p.score(y_hat, y_test)
+    score = p.score(yhat, ytest)
 
     print("Accuracy = " + str(score))
 

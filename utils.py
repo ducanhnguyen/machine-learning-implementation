@@ -3,15 +3,13 @@ import pandas as pd
 
 
 def softmax(X):
-    # print('softmax before: ' + str(X[1:5]))
     X = np.exp(X)
     sum = np.sum(X, axis=1, keepdims=True)
     X = X / sum
-    # print('softmax after: '+ str(X[1:5]))
     return X
 
 
-def convert_to_indicator(y):
+def convert2indicator(y):
     '''
     Convert category into indicator matrix
     :param y:
@@ -24,7 +22,7 @@ def convert_to_indicator(y):
     return Y
 
 
-def read_csv(pathStr, limit=None):
+def readCsv(pathStr, limit=None):
     data = pd.read_csv(pathStr)
     data = data.to_numpy()  # convert to ndarray, headers removed
     # np.random.shuffle(data)

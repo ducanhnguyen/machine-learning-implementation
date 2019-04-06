@@ -19,7 +19,7 @@ class NeuralNetwork:
         '''
         self.M = M
 
-    def initializeWeight(self, K, D, M):
+    def initializeWeights(self, K, D, M):
         W1 = np.random.rand(D, M)
         b1 = np.random.rand(M)
         W2 = np.random.rand(M, K)
@@ -70,19 +70,19 @@ class NeuralNetwork:
             axis=0)
         return gradient_w1, gradient_b1
 
-    def fit(self, X, y, epoch=1000, learning_rate=0.01, L2_regulation=0.0):
+    def fit(self, Xtrain, ytrain, epoch=1000, learning_rate=0.01, L2_regulation=0.0):
         '''
         Build model
-        :param X: a set of observations
-        :param y: labels
+        :param Xtrain: a set of observations
+        :param ytrain: labels
         :param epoch:
         :param learning_rate:
         :return:
         '''
-        K = np.amax(y) + 1
-        Y = utils.convert_to_indicator(y)
-        N, D = X.shape
-        self.W1, self.b1, self.W2, self.b2 = self.initializeWeight(K, D, self.M)
+        K = np.amax(ytrain) + 1
+        Y = utils.convert2indicator(ytrain)
+        N, D = Xtrain.shape
+        self.W1, self.b1, self.W2, self.b2 = self.initializeWeights(K, D, self.M)
 
         l_cost = list()
         l_iterations = list()
@@ -93,14 +93,14 @@ class NeuralNetwork:
             print('Epoch ' + str(i))
 
             # compute score
-            Y_hat, Z = self.predict(X)
-            y_hat = np.argmax(Y_hat, axis=1)
-            y_index = np.argmax(Y, axis=1)
-            score = np.mean(y_hat == y_index)
+            Yhat, Z = self.predict(Xtrain)
+            yhat = np.argmax(Yhat, axis=1)
+            yindex = np.argmax(Y, axis=1)
+            score = np.mean(yhat == yindex)
             l_score.append(score)
             print('Score: ' + str(score))
 
-            cost = self.cost(Y_hat, Y)
+            cost = self.cost(Yhat, Y)
             l_cost.append(cost)
             l_iterations.append(i)
             print('Cost: ' + str(cost))
@@ -110,10 +110,10 @@ class NeuralNetwork:
             startRange = 0
             endRange = N
 
-            gradient_W2, gradient_b2 = self.updateW2andb2(self.W2, self.b2, Y, Y_hat, Z, N, K, self.M,
+            gradient_W2, gradient_b2 = self.updateW2andb2(self.W2, self.b2, Y, Yhat, Z, N, K, self.M,
                                                           startRange,
                                                           endRange)
-            gradient_W1, gradient_b1 = self.updateW1andb1(self.W1, self.W2, self.b1, X, D, Y, Y_hat, Z, N, K,
+            gradient_W1, gradient_b1 = self.updateW1andb1(self.W1, self.W2, self.b1, Xtrain, D, Y, Yhat, Z, N, K,
                                                           self.M,
                                                           startRange,
                                                           endRange)
@@ -134,16 +134,16 @@ class NeuralNetwork:
         Y_hat = utils.softmax(Z.dot(self.W2) + self.b2)
         return Y_hat, Z
 
-    def cost(self, Y_hat, Y):
+    def cost(self, Yhat, Y):
         '''
         Cross entropy cost
-        :param Y_hat: the prediction over classes
+        :param Yhat: the prediction over classes
         :param Y: the true distribution
         :return:
         '''
         cost = 0
-        for idx, y_hat in enumerate(Y_hat):
-            for class_index, predicted_class_probability in enumerate(Y_hat[idx]):
+        for idx, y_hat in enumerate(Yhat):
+            for class_index, predicted_class_probability in enumerate(Yhat[idx]):
                 cost += Y[idx][class_index] * np.log(predicted_class_probability)
 
         cost = -1 * cost
@@ -151,22 +151,22 @@ class NeuralNetwork:
 
 
 def main():
-    X_train, y_train = utils.read_csv('./data/digit-recognizer/train.csv', limit=10000)
+    Xtrain, ytrain = utils.readCsv('./data/digit-recognizer/train.csv', limit=1000)
     s = NeuralNetwork(M=7)
 
     # plot score with different learning rates
-    l_cost_0, l_iterations_0, l_score_0 = s.fit(X_train, y_train, epoch=10, learning_rate=0.0001, L2_regulation=0)
+    l_cost_0, l_iterations_0, l_score_0 = s.fit(Xtrain, ytrain, epoch=1000, learning_rate=0.0001, L2_regulation=0)
     plt.plot(l_iterations_0, l_score_0, label='learning_rate=0.0001')
 
-    l_cost_1, l_iterations_1, l_score_1 = s.fit(X_train, y_train, epoch=10, learning_rate=0.00001, L2_regulation=0)
+    l_cost_1, l_iterations_1, l_score_1 = s.fit(Xtrain, ytrain, epoch=1000, learning_rate=0.00001, L2_regulation=0)
     plt.plot(l_iterations_1, l_score_1, label='learning_rate=0.00001')
 
-    l_cost_2, l_iterations_2, l_score_2 = s.fit(X_train, y_train, epoch=10, learning_rate=0.000001, L2_regulation=0)
+    l_cost_2, l_iterations_2, l_score_2 = s.fit(Xtrain, ytrain, epoch=1000, learning_rate=0.000001, L2_regulation=0)
     plt.plot(l_iterations_2, l_score_2, label='learning_rate=0.000001')
 
     plt.xlabel('Epoch')
     plt.ylabel('Score')
-    plt.title('Learning rate comparison (data = digit-recognizer, size = ' + str(len(X_train)) + ")")
+    plt.title('Learning rate comparison (data = digit-recognizer, size = ' + str(len(Xtrain)) + ")")
     plt.grid(True)
     plt.legend()
     plt.show()

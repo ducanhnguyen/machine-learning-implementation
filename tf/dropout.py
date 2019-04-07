@@ -1,6 +1,6 @@
 """
 # Data: digit-recognizer (number of classes = 10)
-# Method: deep learning, softmax activation on all layers
+# Method: deep learning, softmax activation on all layers, stochatic gradient descent
 # Dropout implementation: only apply dropout when training, no dropout when testing
 """
 import matplotlib.pylab as plt
@@ -57,7 +57,7 @@ class NeuralNetwork:
                 layers.append(hiddenLayer)
         return layers
 
-    def fit(self, Xtrain, ytrain, Xval, yval, epoch=2000, learning_rate=0.001):
+    def fit(self, Xtrain, ytrain, Xval, yval, epoch=1, learning_rate=0.01):
         """
         train model
         :param Xtrain: observations' input
@@ -90,32 +90,46 @@ class NeuralNetwork:
 
         trainingErrors = []
         validationErrors = []
+        trainingAccuracies = []
+        validationAccuracies = []
         iterations = []
 
         with tf.Session() as session:
             session.run(tf.global_variables_initializer())
 
+            iteration = 0
             for i in range(epoch):
-                print('iteration ' + str(i))
-                iterations.append(i)
 
-                session.run(tf_train, feed_dict={tf_X: Xtrain, tf_Y: Ytrain})
+                for j in range(len(Xtrain)):
+                    print('iteration ' + str(iteration))
+                    iterations.append(iteration)
+                    iteration += 1
 
-                # yhat = session.run(tf_yhat, feed_dict={tf_X: Xtrain, tf_Y: Y})
-                # accuracy = np.mean(yhat == ytrain)
-                # print("accuracy: " + str(accuracy))
+                    # stochatic gradient descent
+                    session.run(tf_train, feed_dict={tf_X: Xtrain[j:j+1], tf_Y: Ytrain[j:j+1]})
 
-                trainingError = session.run(tf_cost_testing, feed_dict={tf_X: Xtrain, tf_Y: Ytrain}) / len(Xtrain)
-                print('training error: ' + str(trainingError))
-                trainingErrors.append(trainingError)
+                    yhat = session.run(tf_yhat, feed_dict={tf_X: Xtrain, tf_Y: Ytrain})
+                    accuracy = np.mean(yhat == ytrain)
+                    print("training accuracy: " + str(accuracy))
+                    trainingAccuracies.append(accuracy)
 
-                validationError = session.run(tf_cost_testing, feed_dict={tf_X: Xval, tf_Y: Yval}) / len(Xval)
-                print('validation error: ' + str(validationError))
-                validationErrors.append(validationError)
+                    yhat = session.run(tf_yhat, feed_dict={tf_X: Xval, tf_Y: Yval})
+                    accuracy = np.mean(yhat == yval)
+                    print("validation accuracy: " + str(accuracy))
+                    validationAccuracies.append(accuracy)
 
-                print()
+                    trainingError = session.run(tf_cost_testing, feed_dict={tf_X: Xtrain, tf_Y: Ytrain}) / len(Xtrain)
+                    print('training error: ' + str(trainingError))
+                    trainingErrors.append(trainingError)
 
-        self.plot(trainingErrors, validationErrors, iterations)
+                    validationError = session.run(tf_cost_testing, feed_dict={tf_X: Xval, tf_Y: Yval}) / len(Xval)
+                    print('validation error: ' + str(validationError))
+                    validationErrors.append(validationError)
+
+                    print()
+
+        self.plotError(trainingErrors, validationErrors, iterations)
+        self.plotAccuracy(trainingAccuracies, validationAccuracies, iterations)
 
     def forward_training(self, tf_X, layers, pkeep):
         """
@@ -151,7 +165,7 @@ class NeuralNetwork:
         yhat = self.forward_training(X, y)
         return np.mean(yhat == y)
 
-    def plot(self, trainingErrors, validationErrors, iterations):
+    def plotError(self, trainingErrors, validationErrors, iterations):
         """
         Visualization
         :param scores: 1-D dimension of float numbers
@@ -160,24 +174,39 @@ class NeuralNetwork:
         """
         plt.plot(iterations, validationErrors, label="validation error")
         plt.plot(iterations, trainingErrors, label="training error")
-        plt.xlabel('Epoch')
+        plt.xlabel('Iteration')
         plt.ylabel('Error')
         plt.title('Dropout (data = digit-recognizer)')
         plt.grid(True)
         plt.legend()
         plt.show()
 
+    def plotAccuracy(self, trainingAccuracy, validationAccuracy, iterations):
+        """
+        Visualization
+        :param scores: 1-D dimension of float numbers
+        :param iterations:  1-D dimension of integer numbers
+        :return:
+        """
+        plt.plot(iterations, validationAccuracy, label="validation accuracy")
+        plt.plot(iterations, trainingAccuracy, label="training accuracy")
+        plt.xlabel('Iteration')
+        plt.ylabel('Accuracy')
+        plt.title('Dropout (data = digit-recognizer)')
+        plt.grid(True)
+        plt.legend()
+        plt.show()
 
 def main():
-    X, y = utils.readCsv('../data/digit-recognizer/train.csv', limit=2000)
-    TRAIN = 1500
+    X, y = utils.readCsv('../data/digit-recognizer/train.csv', limit=5000)
+    TRAIN = 4000
     Xtrain = X[:TRAIN]
     ytrain = y[:TRAIN]
     Xval = X[TRAIN:]
     yval = y[TRAIN:]
 
-    s = NeuralNetwork(hiddenLayersSize=[10, 5, 5], pkeep=[0.8, 0.5, 0.5, 0.5])
-    # s = NeuralNetwork(hiddenLayersSize=[10, 5, 5], pkeep=[1, 1, 1, 1])
+    #s = NeuralNetwork(hiddenLayersSize=[10, 5, 5], pkeep=[0.8, 0.5, 0.5, 1])
+    s = NeuralNetwork(hiddenLayersSize=[10, 5, 5], pkeep=[1, 1, 1, 1])
     s.fit(Xtrain, ytrain, Xval, yval)
 
 

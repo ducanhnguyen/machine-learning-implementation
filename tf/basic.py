@@ -105,4 +105,24 @@ def sum():
         print(cost)
 
 
-sum()
+def nn_non_type_casting():
+    # x is array of floats. Therefore, all computations of x output float number
+    x = tf.constant([[1, 2], [3, 4], [5, 6]], dtype=tf.float32)
+    mean, variance = tf.nn.moments(x=x, axes=[0], ) # mean and variance are float number
+
+    with tf.Session() as sess:
+        m, v = sess.run([mean, variance])
+        print('mean = ' + str(m))
+        print('variance = ' + str(v))
+
+def nn_type_casting():
+    # x is array of integers. Therefore, all computations of x output integer number
+    x = tf.constant([[1, 2], [3, 4], [5, 6]])
+    mean, variance = tf.nn.moments(x=x, axes=[0], ) # mean and variance are integer number
+
+    with tf.Session() as sess:
+        m, v = sess.run([mean, variance])
+        print('mean = ' + str(m))
+        print('variance = ' + str(v))
+
+nn_non_type_casting()

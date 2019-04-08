@@ -50,7 +50,7 @@ class NeuralNetwork:
         tf_Y = tf.placeholder(dtype=tf.float32, name='Y', shape=(N, K))
 
         # define symbolic formula
-        tf_Yhat = self.forward(tf_X, layers)  # backpropogation
+        tf_Yhat = self.forward(tf_X, layers)
         tf_cost = tf.math.reduce_sum(-1 * tf.multiply(tf_Y, tf.log(tf_Yhat)))  # cross-entropy
         tf_train = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(tf_cost)
         tf_yhat = tf.math.argmax(tf_Yhat, axis=1)

@@ -5,6 +5,6 @@ K-nearest neighbour, binary perceptron
 
 Full gradient descent, batch gradient descent, stochatic gradient descent
 
-Backpropogation
+Backpropogation improvements: Momentum, RMSPROP, Adagrad, step decay, etc.
 
-Backpropogation improvements: Momentum, RMSPROP, Adagrad, step decay
+Avoid overfiting: L1/L2 regularization, dropout, batch normalization, etc.

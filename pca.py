@@ -10,8 +10,8 @@
 #
 # Usage of Z:
 # - Dimensionality reduction: remove some right most columns
-# - Decorrelation: In X, there exist correlations between two different features (see K_XX)
-# . In Z, there do not exist any correlation between two different features.
+# - Decorrelation: In X, there exist correlations between two different features (see covariance matrix K_XX)
+# . In Z, there does not exist any correlation between two different features.
 # It means that all features in Z have the same importance in model construction.
 import sys
 

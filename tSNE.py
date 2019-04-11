@@ -1,7 +1,7 @@
 """
-tSNE (2008) is non-linear transformation. Unlike PCS, which is a linear transformation, tSANE has no model
+tSNE (2008) is non-linear transformation. Unlike PCA, which is known as a linear transformation, tSNE has no model
 transformation. Therefore, tSNE can not be used for classification and clustering. tSNE is only used for
-visualization in 2-D or 3-D dimension from high dimensional data point.
+visualization in 2-D or 3-D dimension from high dimension.
 
 Motivation of tSNE: Try to model the relative distances between data points in high dimension into probabilities.
 Then, create new data points having the same probability.

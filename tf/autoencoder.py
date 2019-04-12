@@ -56,16 +56,16 @@ class AutoEncoder:
                     iterations.append(iteration)
 
                     # mini-batch gradient descent
+                    cost = 0
                     if j == nBatches:
-                        session.run(train_op, feed_dict={tf_X: X[j * nBatches:N]})
+                        _, cost = session.run((train_op, tf_cost), feed_dict={tf_X: X[j * nBatches:N]})
                     else:
-                        session.run(train_op, feed_dict={tf_X: X[j * nBatches:(j + 1) * nBatches]})
+                        _, cost = session.run((train_op, tf_cost), feed_dict={tf_X: X[j * nBatches:(j + 1) * nBatches]})
 
-                    cost = session.run(tf_cost, feed_dict={tf_X: X})
                     print("Epoch " + str(i) + "/ Iteration " + str(iteration) + "/ Cost = " + str(cost))
                     costs.append(cost)
-
                     iteration += 1
+
 
             self.plotCost(iterations, costs)
 

@@ -151,7 +151,7 @@ class NeuralNetwork:
 
 
 def main():
-    Xtrain, ytrain = utils.readCsv('./data/digit-recognizer/train.csv', limit=1000)
+    Xtrain, ytrain = utils.readTrainingDigitRecognizer('./data/digit-recognizer/train.csv', limit=1000)
     s = NeuralNetwork(M=7)
 
     # plot score with different learning rates

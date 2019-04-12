@@ -9,6 +9,10 @@ def softmax(X):
     return X
 
 
+def sigmoid(X):
+    return 1 / (1 + np.exp(-X))
+
+
 def convert2indicator(y):
     '''
     Convert category into indicator matrix
@@ -22,11 +26,17 @@ def convert2indicator(y):
     return Y
 
 
-def readCsv(pathStr, limit=None):
+def readTrainingDigitRecognizer(pathStr, limit=None):
     data = pd.read_csv(pathStr)
     data = data.to_numpy()  # convert to ndarray, headers removed
-    # np.random.shuffle(data)
     X = data[:limit, 1:] * 1.0 / 255  # convert to the range of [0..1] (normalization step)
     y = data[:limit, 0]  # labels
     print('Load data from ' + str(pathStr) + ' done')
     return X, y
+
+def readTestingDigitRecognizer(pathStr, limit=None):
+    data = pd.read_csv(pathStr)
+    data = data.to_numpy()  # convert to ndarray, headers removed
+    X = data[:limit] * 1.0 / 255  # convert to the range of [0..1] (normalization step)
+    print('Load data from ' + str(pathStr) + ' done')
+    return X

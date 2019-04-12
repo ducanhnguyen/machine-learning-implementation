@@ -38,7 +38,7 @@ def plot_2D(X, y):
 
 
 def main():
-    X, y = utils.readCsv('./data/digit-recognizer/train.csv', limit=2000)
+    X, y = utils.readTrainingDigitRecognizer('./data/digit-recognizer/train.csv', limit=2000)
     plot_3D(X, y)
 
 

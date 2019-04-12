@@ -119,7 +119,7 @@ class AutoEncoder:
 
 
 def main():
-    X, y = utils.readCsv('../data/digit-recognizer/train.csv')
+    X, y = utils.readTrainingDigitRecognizer('../data/digit-recognizer/train.csv')
     ae = AutoEncoder(M=300)
     ae.fit(X)
 

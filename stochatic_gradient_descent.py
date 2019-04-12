@@ -231,7 +231,7 @@ class Neural_Network:
 
 def main():
     ANALYZED_OBSERVATIONS = 1000
-    Xtrain, ytrain = utils.readCsv('./data/digit-recognizer/train.csv', limit=ANALYZED_OBSERVATIONS)
+    Xtrain, ytrain = utils.readTrainingDigitRecognizer('./data/digit-recognizer/train.csv', limit=ANALYZED_OBSERVATIONS)
     s = Neural_Network(M=7)
 
     # global configuration

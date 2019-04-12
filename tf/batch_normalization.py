@@ -1,5 +1,6 @@
 """
 # Batch normalization implementation (https://arxiv.org/abs/1502.03167)
+# Idea: Each unit/feature is independently normalized into unit variance and zero mean before putting into activaton function.
 # Data: digit-recognizer (number of classes = 10)
 # Method: deep learning, relu activation on all layers except the last layer, softmax activation on the last layer,
 # mini-batch gradient descent
@@ -166,7 +167,7 @@ class NeuralNetwork:
                 tf_input = tf.nn.softmax(tf_input, axis=1)
             else:
                 # batch normalization
-                # compute mean and variance of each features with the given observations
+                # compute mean and variance of each unit with the given observations
                 mean, variance = tf.nn.moments(x=tf_input, axes=[0])  # shape: (M2, 1)
 
                 layer.running_mean = self.decay * layer.running_mean + (1 - self.decay) * mean  # shape: (M2, 1)
@@ -250,7 +251,7 @@ class NeuralNetwork:
 
 
 def main():
-    X, y = utils.readCsv('../data/digit-recognizer/train.csv', limit=2000)
+    X, y = utils.readTrainingDigitRecognizer('../data/digit-recognizer/train.csv', limit=2000)
     TRAIN = 1500
     Xtrain = X[:TRAIN]
     ytrain = y[:TRAIN]

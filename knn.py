@@ -64,7 +64,7 @@ class KNN:
 
 
 def main():
-    X, y = utils.readCsv('./data/digit-recognizer/train.csv', limit=2000)
+    X, y = utils.readTrainingDigitRecognizer('./data/digit-recognizer/train.csv', limit=2000)
     TRAIN = 1500
     Xtrain = X[:TRAIN]
     ytrain = y[:TRAIN]

@@ -74,7 +74,7 @@ class PCA:
 def main():
     np.set_printoptions(threshold=sys.maxsize)
 
-    X, Y = utils.readCsv('./data/digit-recognizer/train.csv', limit=2000)
+    X, Y = utils.readTrainingDigitRecognizer('./data/digit-recognizer/train.csv', limit=2000)
     pca = PCA(X)  # do not apply PCA on labels
     pca.transform()
 

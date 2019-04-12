@@ -66,7 +66,7 @@ class Perceptron:
 
 
 def main():
-    X, Y = utils.readCsv('./data/digit-recognizer/train.csv', limit=2000)
+    X, Y = utils.readTrainingDigitRecognizer('./data/digit-recognizer/train.csv', limit=2000)
     X, Y = filter(X, Y)
     TRAIN = int(len(X) / 2)
     Xtrain = X[:TRAIN]

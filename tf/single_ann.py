@@ -85,7 +85,7 @@ class NeuralNetwork:
 
 
 def main():
-    X_train, y_train = utils.readCsv('../data/digit-recognizer/train.csv', limit=1000)
+    X_train, y_train = utils.readTrainingDigitRecognizer('../data/digit-recognizer/train.csv', limit=1000)
     s = NeuralNetwork(M=7)
     s.fit(X_train, y_train)
 

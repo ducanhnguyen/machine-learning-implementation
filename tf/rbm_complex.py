@@ -49,7 +49,7 @@ class RBM:
         self.tf_b = tf.Variable(dtype=tf.float32, initial_value=tf.random.normal(dtype=tf.float32, shape=(self.M1, 1)))
 
         tf_Vhat = self.forward(tf_V)
-        tf_Vsample = self.Gibbs_sample(tf_V)
+        tf_Vsample = self.Gibbs_sampler(tf_V)
 
         tf_cost = tf.reduce_mean(self.F(tf_V, self.M2) - self.F(tf_Vsample, self.M2))
         tf_Z = tf.nn.sigmoid(tf.math.add(tf.matmul(tf_V, self.tf_W), tf.transpose(self.tf_c)))
@@ -85,16 +85,19 @@ class RBM:
 
             self.Z = session.run(tf_Z, feed_dict={tf_V: X})
 
-    def Gibbs_sample(self, V):
+    def Gibbs_sampler(self, V):
         p_h_given_v = tf.nn.sigmoid(tf.math.add(tf.matmul(V, self.tf_W), tf.transpose(self.tf_c)))
-        r = tf.random_uniform(dtype=tf.float32, shape=tf.shape(p_h_given_v))
-        H = tf.to_float(r < p_h_given_v)
+        Hsamples = self.Bernoulli_sampler(p_h_given_v)
 
-        p_v_given_h = tf.nn.sigmoid(tf.math.add(tf.matmul(H, tf.transpose(self.tf_W)), tf.transpose(self.tf_b)))
-        r = tf.random_uniform(dtype=tf.float32, shape=tf.shape(p_v_given_h))
-        Vsample = tf.to_float(r < p_v_given_h)
+        p_v_given_h = tf.nn.sigmoid(tf.math.add(tf.matmul(Hsamples, tf.transpose(self.tf_W)), tf.transpose(self.tf_b)))
+        Vsamples = self.Bernoulli_sampler(p_v_given_h)
 
-        return Vsample
+        return Vsamples
+
+    def Bernoulli_sampler(self, p_success):
+        r = tf.random_uniform(dtype=tf.float32, shape=tf.shape(p_success))
+        samplers = tf.to_float(r < p_success)
+        return samplers
 
     def F(self, tf_V, M):
         F = -tf.matmul(tf_V, self.tf_b)

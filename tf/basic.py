@@ -153,4 +153,33 @@ def nn_type_casting():
         print('variance = ' + str(v))
 
 
-sum_matrix_3()
+def bernoulli_sample_generation():
+    import numpy as np
+    rand = tf.random_uniform(shape=(10000, 1), seed=100)
+
+    p_success = 0.5
+
+    with tf.Session() as session:
+        session.run(tf.global_variables_initializer())
+        uniform_values = session.run(rand)
+
+        print('probability of success: ')
+        print(p_success)
+
+        print('uniform values:')
+        print(uniform_values.flatten())
+
+        # convert probability into 0 or 1
+        bernoulli_values = []
+        for item in uniform_values:
+            if item > p_success:
+                bernoulli_values.append(1)
+            else:
+                bernoulli_values.append(0)
+        print('bernoulli values:')
+        print(bernoulli_values)
+
+        print('mean = ' + str(np.mean(bernoulli_values)))
+        print('variance = ' + str(np.var(bernoulli_values)))
+
+bernoulli_sample_generation()

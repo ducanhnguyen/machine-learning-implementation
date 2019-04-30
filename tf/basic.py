@@ -33,8 +33,11 @@ def sum_matrix_2():
 
 
 def sum_matrix_3():
+    '''
+    Broadcasting example
+    '''
     x = tf.placeholder(dtype=tf.float32, shape=(4, 2))
-    y = tf.placeholder(dtype=tf.float32, shape=(1, 2))
+    y = tf.placeholder(dtype=tf.float32, shape=(1, 2)) # will be broadcast
     z = tf.math.add(x, y)  # the same as '+'
 
     with tf.Session() as session:
@@ -48,7 +51,7 @@ def sum_matrix_3():
          [10. 12.]]
         '''
 
-def multiple():
+def matrix_multiply():
     x = tf.placeholder(dtype=tf.float32, shape=(2, 2))
     y = tf.placeholder(dtype=tf.float32, shape=(2, 2))
     z = tf.matmul(x, y)
@@ -90,7 +93,6 @@ def variable_value():
 def gradient_descent():
     x_train = np.array([3, 4])
     y_train = 4
-    print('y = ' + str(y_train))
 
     # an observation
     x = tf.placeholder(dtype=tf.float32, shape=(2,))
@@ -120,7 +122,7 @@ def gradient_descent():
             print()
 
 
-def sum():
+def reduce_sum():
     y = tf.placeholder(dtype=tf.float32, shape=(3,))
     y_hat = tf.placeholder(dtype=tf.float32, shape=(3,))
 
@@ -131,27 +133,25 @@ def sum():
         print(cost)
 
 
-def nn_non_type_casting():
+def moments_non_type_casting():
     # x is array of floats. Therefore, all computations of x output float number
     x = tf.constant([[1, 2], [3, 4], [5, 6]], dtype=tf.float32)
-    mean, variance = tf.nn.moments(x=x, axes=[0], )  # mean and variance are float number
+    mean, variance = tf.nn.moments(x=x, axes=[0])  # mean and variance are float number
 
     with tf.Session() as sess:
         m, v = sess.run([mean, variance])
         print('mean = ' + str(m))
         print('variance = ' + str(v))
 
-
-def nn_type_casting():
+def moments_type_casting():
     # x is array of integers. Therefore, all computations of x output integer number
     x = tf.constant([[1, 2], [3, 4], [5, 6]])
-    mean, variance = tf.nn.moments(x=x, axes=[0], )  # mean and variance are integer number
+    mean, variance = tf.nn.moments(x=x, axes=[0])  # mean and variance are integer number
 
     with tf.Session() as sess:
         m, v = sess.run([mean, variance])
         print('mean = ' + str(m))
         print('variance = ' + str(v))
-
 
 def bernoulli_sample_generation():
     import numpy as np
@@ -181,5 +181,3 @@ def bernoulli_sample_generation():
 
         print('mean = ' + str(np.mean(bernoulli_values)))
         print('variance = ' + str(np.var(bernoulli_values)))
-
-bernoulli_sample_generation()
